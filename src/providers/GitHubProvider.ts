@@ -45,9 +45,19 @@ export class GitHubProvider extends BaseGitHubProvider<UpdateInfo> {
 
     const feed = parseXml(feedXml)
     let latestRelease = feed.element("entry", false, `No published versions on GitHub`)
-    let version: string | null
+    let version: string | null = null
     try {
-      if (this.updater.allowPrerelease) {
+      if(this.updater.channel !== null) {
+        const latestChannelRelease = feed.getElements("entry").find((element) => {
+          return element.element("link").attribute("href").includes((this.updater.channel as string));
+        })
+
+        if(latestChannelRelease !== undefined) {
+          latestRelease = latestChannelRelease
+          version = latestRelease.element("link").attribute("href").match(hrefRegExp)!![1]
+        }
+      }
+      else if (this.updater.allowPrerelease) {
         // noinspection TypeScriptValidateJSTypes
         version = latestRelease.element("link").attribute("href").match(hrefRegExp)!![1]
       }
@@ -64,6 +74,39 @@ export class GitHubProvider extends BaseGitHubProvider<UpdateInfo> {
     }
     catch (e) {
       throw newError(`Cannot parse releases feed: ${e.stack || e.message},\nXML:\n${feedXml}`, "ERR_UPDATER_INVALID_RELEASE_FEED")
+    }
+
+    if(version === null && this.updater.channel !== null) {
+      let endReached: boolean = false;
+      let pageIndex: number = 1;
+
+      while (!endReached) {
+        const releaseList: string = (await this.httpRequest(newUrlFromBase(`/repos${this.basePath}?page=${pageIndex}&per_page=100`, this.baseApiUrl), {
+          accept: "application/json, */*",
+        }, cancellationToken))!
+
+        const releases = JSON.parse(releaseList);
+
+        const releaseKeys = Object.keys(releases);
+
+        endReached = releaseKeys.length < 30;
+
+        for(const releaseIndex of releaseKeys) {
+          const release = releases[releaseIndex];
+
+          if(release.tag_name.includes(this.updater.channel)) {
+            version = release.tag_name.startsWith('v') ? release.tag_name.substr(1) : release.tag_name;
+
+            break;
+          }
+        }
+
+        if(version !== null) {
+          break;
+        }
+
+        pageIndex++;
+      }
     }
 
     if (version == null) {
