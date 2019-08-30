@@ -9,7 +9,7 @@
   "bugs": "https://github.com/electron-userland/electron-builder/issues",
   "homepage": "https://github.com/electron-userland/electron-builder",
   "scripts": {
-    "build": "ts-babel"
+    "build": "ts-babel \"./\""
   },
   "files": [
     "out"
@@ -34,6 +34,7 @@
     "tag": "next"
   },
   "devDependencies": {
+    "babel-preset-ts-node8": "^4.0.0",
     "typescript": "^3.6.2"
   }
 }
