@@ -77,35 +77,21 @@ export class GitHubProvider extends BaseGitHubProvider<UpdateInfo> {
     }
 
     if(version === null && this.updater.channel !== null) {
-      let endReached: boolean = false;
-      let pageIndex: number = 1;
+      const releaseList: string = (await this.httpRequest(newUrlFromBase(`/repos${this.basePath}?per_page=100`, this.baseApiUrl), {
+        accept: "application/json, */*",
+      }, cancellationToken))!
 
-      while (!endReached) {
-        const releaseList: string = (await this.httpRequest(newUrlFromBase(`/repos${this.basePath}?page=${pageIndex}&per_page=100`, this.baseApiUrl), {
-          accept: "application/json, */*",
-        }, cancellationToken))!
+      const releases = JSON.parse(releaseList);
+      const releaseKeys = Object.keys(releases);
 
-        const releases = JSON.parse(releaseList);
+      for(const releaseIndex of releaseKeys) {
+        const release = releases[releaseIndex];
 
-        const releaseKeys = Object.keys(releases);
+        if(release.tag_name.includes(this.updater.channel)) {
+          version = release.tag_name.startsWith('v') ? release.tag_name.substr(1) : release.tag_name;
 
-        endReached = releaseKeys.length < 30;
-
-        for(const releaseIndex of releaseKeys) {
-          const release = releases[releaseIndex];
-
-          if(release.tag_name.includes(this.updater.channel)) {
-            version = release.tag_name.startsWith('v') ? release.tag_name.substr(1) : release.tag_name;
-
-            break;
-          }
-        }
-
-        if(version !== null) {
           break;
         }
-
-        pageIndex++;
       }
     }
 
