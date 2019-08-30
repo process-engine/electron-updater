@@ -1,16 +1,11 @@
 {
-  "extends": "../tsconfig-base.json",
+  "extends": "./tsconfig-base.json",
   "compilerOptions": {
     "outDir": "out",
     "rootDir": "src"
   },
-  "jsdoc": {
-    "out": "../../scripts/jsdoc/out/updater",
-    "examples": "../../scripts/jsdoc/examples",
-    "access": "public"
-  },
   "files": [
-    "../../typings/electron.d.ts"
+    "./typings/electron.d.ts"
   ],
   "include": [
     "src/**/*.ts"
