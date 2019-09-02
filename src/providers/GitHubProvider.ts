@@ -49,7 +49,7 @@ export class GitHubProvider extends BaseGitHubProvider<UpdateInfo> {
     try {
       if(this.updater.channel != null) {
         const latestChannelRelease = feed.getElements("entry").find((element) => {
-          return element.element("link").attribute("href").includes((this.updater.channel as string));
+          return element.element("link").attribute("href").includes((this.updater.channel as string))
         })
 
         if(latestChannelRelease !== undefined) {
@@ -81,16 +81,16 @@ export class GitHubProvider extends BaseGitHubProvider<UpdateInfo> {
         accept: "application/json, */*",
       }, cancellationToken))!
 
-      const releases = JSON.parse(releaseList);
-      const releaseKeys = Object.keys(releases);
+      const releases = JSON.parse(releaseList)
+      const releaseKeys = Object.keys(releases)
 
       for(const releaseIndex of releaseKeys) {
-        const release = releases[releaseIndex];
+        const release = releases[releaseIndex]
 
         if(release.tag_name.includes(this.updater.channel)) {
-          version = release.tag_name.startsWith('v') ? release.tag_name.substr(1) : release.tag_name;
+          version = release.tag_name.startsWith('v') ? release.tag_name.substr(1) : release.tag_name
 
-          break;
+          break
         }
       }
     }
