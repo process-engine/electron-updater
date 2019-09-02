@@ -4,6 +4,7 @@ import { URL } from "url"
 import { AppUpdater } from "../AppUpdater"
 import { getChannelFilename, newBaseUrl, newUrlFromBase, Provider, ResolvedUpdateFileInfo } from "../main"
 import { parseUpdateInfo, ProviderRuntimeOptions, resolveFiles } from "./Provider"
+import { OutgoingHttpHeaders } from "http"
 
 const hrefRegExp = /\/tag\/v?([^\/]+)$/
 
@@ -77,9 +78,14 @@ export class GitHubProvider extends BaseGitHubProvider<UpdateInfo> {
     }
 
     if(version == null && this.updater.channel != null) {
-      const releaseList: string = (await this.httpRequest(newUrlFromBase(`/repos${this.basePath}?per_page=100`, this.baseApiUrl), {
-        accept: "application/json, */*",
-      }, cancellationToken))!
+      const releaseUrl: URL = newUrlFromBase(`/repos${this.basePath}?per_page=100`, this.baseApiUrl)
+      const headers: OutgoingHttpHeaders = {accept: "application/json, */*"}
+
+      const releaseList: string | null = await this.httpRequest(releaseUrl, headers, cancellationToken)
+
+      if (releaseList == null) {
+        throw newError('Could not get release list.', "ERR_UPDATER_LATEST_VERSION_NOT_FOUND")
+      }
 
       const releases = JSON.parse(releaseList)
       const releaseKeys = Object.keys(releases)
