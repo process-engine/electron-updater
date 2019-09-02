@@ -47,7 +47,7 @@ export class GitHubProvider extends BaseGitHubProvider<UpdateInfo> {
     let latestRelease = feed.element("entry", false, `No published versions on GitHub`)
     let version: string | null = null
     try {
-      if(this.updater.channel !== null) {
+      if(this.updater.channel != null) {
         const latestChannelRelease = feed.getElements("entry").find((element) => {
           return element.element("link").attribute("href").includes((this.updater.channel as string));
         })
@@ -76,7 +76,7 @@ export class GitHubProvider extends BaseGitHubProvider<UpdateInfo> {
       throw newError(`Cannot parse releases feed: ${e.stack || e.message},\nXML:\n${feedXml}`, "ERR_UPDATER_INVALID_RELEASE_FEED")
     }
 
-    if(version === null && this.updater.channel !== null) {
+    if(version == null && this.updater.channel != null) {
       const releaseList: string = (await this.httpRequest(newUrlFromBase(`/repos${this.basePath}?per_page=100`, this.baseApiUrl), {
         accept: "application/json, */*",
       }, cancellationToken))!
