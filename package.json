@@ -1,6 +1,6 @@
 {
-  "name": "electron-updater",
-  "version": "0.0.0-semantic-release",
+  "name": "@process-engine/electron-updater",
+  "version": "1.0.0",
   "description": "Cross platform updater for electron applications",
   "main": "out/main.js",
   "author": "Vladimir Krivosheev",
@@ -8,21 +8,33 @@
   "repository": "electron-userland/electron-builder",
   "bugs": "https://github.com/electron-userland/electron-builder/issues",
   "homepage": "https://github.com/electron-userland/electron-builder",
+  "scripts": {
+    "build": "ts-babel"
+  },
   "files": [
     "out"
   ],
   "dependencies": {
-    "@types/semver": "^6.0.1",
-    "lazy-val": "^1.0.4",
+    "builder-util-runtime": "8.3.0",
     "fs-extra": "^8.1.0",
     "js-yaml": "^3.13.1",
-    "semver": "^6.3.0",
-    "builder-util-runtime": "0.0.0-semantic-release",
+    "lazy-val": "^1.0.4",
     "lodash.isequal": "^4.5.0",
-    "pako": "^1.0.10"
+    "pako": "^1.0.10",
+    "semver": "^6.3.0"
   },
   "typings": "./out/main.d.ts",
   "publishConfig": {
     "tag": "next"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^8.0.0",
+    "@types/js-yaml": "^3.12.1",
+    "@types/lodash.isequal": "^4.5.5",
+    "@types/node": "^12.7.3",
+    "@types/semver": "^6.0.1",
+    "babel-preset-ts-node8": "^4.0.0",
+    "ts-babel": "^6.1.7",
+    "typescript": "^3.6.2"
   }
 }
