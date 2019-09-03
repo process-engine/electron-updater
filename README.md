@@ -9,7 +9,3 @@ Supported OS:
  - macOS ([Squirrel.Mac](https://github.com/Squirrel/Squirrel.Mac)).
  - Windows (NSIS).
  - Linux (AppImage).
-
-## Credits
-
-Thanks to [Evolve Labs](https://www.evolvehq.com) for donating the npm package name.
