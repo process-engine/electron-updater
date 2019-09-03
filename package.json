@@ -5,9 +5,14 @@
   "main": "out/main.js",
   "author": "Vladimir Krivosheev",
   "license": "MIT",
-  "repository": "electron-userland/electron-builder",
-  "bugs": "https://github.com/electron-userland/electron-builder/issues",
-  "homepage": "https://github.com/electron-userland/electron-builder",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/process-engine/electron-updater.git"
+  },
+  "bugs": {
+    "url": "https://github.com/process-engine/electron-updater/issues"
+  },
+  "homepage": "https://github.com/process-engine/electron-updater",
   "scripts": {
     "build": "ts-babel"
   },
