@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/electron-updater",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Cross platform updater for electron applications",
   "main": "out/main.js",
   "author": "Vladimir Krivosheev",
