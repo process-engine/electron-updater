@@ -49,9 +49,20 @@ export class GitHubProvider extends BaseGitHubProvider<UpdateInfo> {
     let version: string | null = null
     try {
       if(this.updater.channel != null) {
-        const latestChannelRelease = feed.getElements("entry").find((element) => {
-          return element.element("link").attribute("href").includes((this.updater.channel as string))
-        })
+        let latestChannelRelease
+
+        if(this.updater.channel.toLowerCase() == 'stable') {
+          latestChannelRelease = feed.getElements("entry").find((element) => {
+            const releaseLink = element.element("link").attribute("href")
+            const version = releaseLink.substring(releaseLink.lastIndexOf('/'))
+
+            return !version.includes('-')
+          })
+        } else {
+          latestChannelRelease = feed.getElements("entry").find((element) => {
+            return element.element("link").attribute("href").includes((this.updater.channel as string))
+          })
+        }
 
         if(latestChannelRelease !== undefined) {
           latestRelease = latestChannelRelease
@@ -90,10 +101,13 @@ export class GitHubProvider extends BaseGitHubProvider<UpdateInfo> {
       const releases = JSON.parse(releaseList)
       const releaseKeys = Object.keys(releases)
 
+      const lookingForStable = this.updater.channel.toLowerCase() == 'stable'
+
       for(const releaseIndex of releaseKeys) {
         const release = releases[releaseIndex]
+        const stableFound = !release.tag_name.includes('-')
 
-        if(release.tag_name.includes(this.updater.channel)) {
+        if(release.tag_name.includes(this.updater.channel) || (lookingForStable && stableFound)) {
           version = release.tag_name.startsWith('v') ? release.tag_name.substr(1) : release.tag_name
 
           break
