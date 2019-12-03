@@ -14,7 +14,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    if: "!contains(github.actor, 'process-engine-ci') || contains(github.actor, 'admin')"
+    
     steps:
     - uses: actions/checkout@master
 
